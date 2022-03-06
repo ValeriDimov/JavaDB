@@ -24,14 +24,18 @@ public class Product {
     @OneToMany(targetEntity = Sale.class, mappedBy = "product")
     private Set<Sale> sales;
 
-    public Product() {}
+    public Product() {
+        this.sales = new HashSet<>();
+
+    }
 
     public Product(String name, Double quantity, BigDecimal price) {
+        this();
+
         this.name = name;
         this.quantity = quantity;
         this.price = price;
 
-        this.sales = new HashSet<>();
     }
 
     public int getId() {
@@ -67,10 +71,10 @@ public class Product {
     }
 
     public Set<Sale> getSales() {
-        return sales;
+        return Collections.unmodifiableSet(sales);
     }
 
     public void setSales(Set<Sale> sales) {
-        this.sales = Collections.unmodifiableSet(sales);
+        this.sales = sales;
     }
 }

@@ -24,14 +24,16 @@ public class Customer {
     private Set<Sale> sales;
 
     public Customer() {
+        this.sales = new HashSet<>();
     }
 
     public Customer(String name, String email, String creditCardNumber) {
+        this();
+
         this.name = name;
         this.email = email;
         this.creditCardNumber = creditCardNumber;
 
-        this.sales = new HashSet<>();
     }
 
     public int getId() {
@@ -67,10 +69,10 @@ public class Customer {
     }
 
     public Set<Sale> getSales() {
-        return sales;
+        return Collections.unmodifiableSet(sales);
     }
 
     public void setSales(Set<Sale> sales) {
-        this.sales = Collections.unmodifiableSet(sales);
+        this.sales = sales;
     }
 }

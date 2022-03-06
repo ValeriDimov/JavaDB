@@ -17,12 +17,14 @@ public class StoreLocation {
     @OneToMany(targetEntity = Sale.class, mappedBy = "storeLocation")
     private Set<Sale> sales;
 
-    public StoreLocation() {}
+    public StoreLocation() {
+        this.sales = new HashSet<>();
+    }
 
     public StoreLocation(String locationName) {
-        this.locationName = locationName;
+        this();
 
-        this.sales = new HashSet<>();
+        this.locationName = locationName;
     }
 
     public int getId() {
@@ -42,10 +44,10 @@ public class StoreLocation {
     }
 
     public Set<Sale> getSales() {
-        return sales;
+        return Collections.unmodifiableSet(sales);
     }
 
     public void setSales(Set<Sale> sales) {
-        this.sales = Collections.unmodifiableSet(sales);
+        this.sales = sales;
     }
 }
