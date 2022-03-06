@@ -8,6 +8,7 @@ import _04_HospitalDatabase.entities.Visitation;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.util.List;
 import java.util.Scanner;
 
 public class _04Main {
@@ -53,17 +54,31 @@ public class _04Main {
         diagnose.getMedicaments().add(medicament);
         Visitation visitation = new Visitation(diagnose);
 
-        Patient newPatient = new Patient(patientFirstName, patientLastName,
-                patientAddress, patientEmail, patientHasInsurance);
-        newPatient.getVisitations().add(visitation);
-
-        visitation.setPatient(newPatient);
         visitation.setDiagnose(diagnose);
         diagnose.setVisitation(visitation);
 
         entityManager.persist(diagnose);
         entityManager.persist(medicament);
         entityManager.persist(visitation);
+
+        List<Patient> patients = entityManager.createQuery("select e from Patient e WHERE e.email = :emailParam", Patient.class)
+                .setParameter("emailParam", patientEmail)
+                .getResultList();
+
+        if (patients.isEmpty()) {
+            Patient newPatient = new Patient(patientFirstName, patientLastName,
+                    patientAddress, patientEmail, patientHasInsurance);
+            newPatient.getVisitations().add(visitation);
+
+            visitation.setPatient(newPatient);
+
+            entityManager.persist(newPatient);
+
+        } else {
+            Patient existingPatient = patients.get(0);
+            visitation.setPatient(existingPatient);
+            entityManager.persist(existingPatient);
+        }
 
         entityManager.getTransaction().commit();
         entityManager.close();
